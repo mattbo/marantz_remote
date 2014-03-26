@@ -83,7 +83,7 @@ class MaremComm(object):
        rv = self.run_cmd("MV%s\r" % self.db_to_vol(db), 3)
        return self.vol_to_db(rv[0][2:])
 
-   speakers = (('SPA' 'Living Room'), ('SPB', 'Kitchen'), ('A+B', 'Both'))
+   speakers = (('SPA', 'Living Room'), ('SPB', 'Kitchen'), ('A+B', 'Both'))
 
    def get_spkr(self):
        rv = self.run_cmd('PSFRONT?\r', 4)
@@ -119,22 +119,22 @@ class MaremComm(object):
        return rv[0][2:]
 
    surround_modes = (
-       'DIRECT',
-       'PURE DIRECT',
-       'STEREO',
-       'AUTO',
-       'DOLBY DIGITAL',
-       'DOLBY',
-       'DTS SURROUND',
-       'MCH STEREO',
-       'VIRTUAL')
+       ('DIRECT', 'DIRECT'),
+       ('PURE DIRECT', 'PURE DIRECT'),
+       ('STEREO', 'STEREO'),
+       ('AUTO', 'AUTO'),
+       ('DOLBY DIGITAL', 'DOLBY DIGITAL'),
+       ('DOLBY', 'DOLBY'),
+       ('DTS SURROUND', 'DTS SURROUND'),
+       ('MCH STEREO', 'MCH STEREO'),
+       ('VIRTUAL', 'VIRTUAL'))
 
    def get_surround_mode(self):
        rv = self.run_cmd('MS?\r', 9)
        return rv[0][2:]
 
    def set_surround_mode(self, mode):
-       if mode not in self.surround_modes:
+       if mode not in [x[0] for x in self.surround_modes]:
            raise BadValue("%s is not an available mode", mode)
        rv = self.run_cmd('MS%s\r' % mode, 9)
        return rv[1][2:]

@@ -1,0 +1,34 @@
+{% block title %}
+  <title>Marantz NR-1602 Web Controller</title>
+{% endblock %}
+{% block extra_head %}
+  <script type=text/javascript 
+    src="{{url_for('static', filename='jquery-1.10-min.js'}}"></script>
+  <script type=text/javascript>
+    //Set the root URL so we can make sane AJAX requests
+    $SCRIPT_ROOT = {{ request.script_root|tojson|safe }};
+  </script>
+  <script type=text/javascript 
+    src="{{url_for('static', filename='marem.js'}}"></script>
+{% endblock %}
+
+{% block content %}
+<h2>Marantz</h2>
+<ul>
+  <li><a href="#" id='refresh'>Refresh</a></li>
+  <li attr='volume'>Volume: <input type='text' id='volume'/> dB
+              <a href="#" id='volume_up'>+</a>
+              <a href="#" id='volume_down'>-</a></li>
+  <li attr='speakers'>Speakers: 
+              <input type='radio' id='spkr_a' class='spkr_state'/> A
+              <input type='radio' id='spkr_b' class='spkr_state'/> B
+              <input type='radio' id='spkr_ab' class='spkr_state'/> A+B </li>
+  <li attr='source'>Input source: <select id='source'> 
+              <option id='sat'>SAT (Roku)</option> 
+              <option id='BD'>BD (Mac Mini)</option> 
+              <option id='DVD'>DVD (unused)</option> 
+              <option id='GAME'>Game (unused)</option> 
+              <option id='PHONO'>Phono (unused)</option> 
+            </select> </li>
+</ul>
+{% endblock %}

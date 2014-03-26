@@ -8,5 +8,5 @@ class MaremForm(Form):
     volume = DecimalField('volume', validators=[Required()], places=1)
     speakers = SelectField('speakers', choices=MaremComm.speakers)
     surround_mode = SelectField('surround mode',
-            choices=[(x, x.capitalize()) for x in MaremComm.surround_modes])
+            choices=MaremComm.surround_modes)
     source = SelectField('source', choices=MaremComm.sources)

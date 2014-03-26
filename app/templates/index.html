@@ -9,7 +9,7 @@
             {{form.hidden_tag()}}
             <table>
                 {% for key in state.keys() %}
-                <tr><td>{{key}}</td><td>{{form.get_attr(key)}}</td>
+                <tr><td>{{key}}</td><td>{{form|attr(key)}}</td>
                 {% endfor %}
             </table>
             <p><input type="submit" value="Submit"></p>
