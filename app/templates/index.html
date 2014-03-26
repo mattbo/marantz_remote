@@ -1,0 +1,18 @@
+<html>
+    <head>
+        <title>{{title}} - marem</title>
+    </head>
+    <body>
+        <h1>Hello, welcome to the Marantz Remote</h1>
+        Current state : 
+        <form action="" method="post" name="remote">
+            {{form.hidden_tag()}}
+            <table>
+                {% for key in state.keys() %}
+                <tr><td>{{key}}</td><td>{{form.get_attr(key)}}</td>
+                {% endfor %}
+            </table>
+            <p><input type="submit" value="Submit"></p>
+        </form>
+    </body>
+</html>
