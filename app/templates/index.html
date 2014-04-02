@@ -1,18 +1,25 @@
-<html>
-    <head>
-        <title>{{title}} - marem</title>
-    </head>
-    <body>
-        <h1>Hello, welcome to the Marantz Remote</h1>
-        Current state : 
-        <form action="" method="post" name="remote">
-            {{form.hidden_tag()}}
-            <table>
-                {% for key in state.keys() %}
-                <tr><td>{{key}}</td><td>{{form|attr(key)}}</td>
-                {% endfor %}
-            </table>
-            <p><input type="submit" value="Submit"></p>
-        </form>
-    </body>
-</html>
+{% extends "base.html" %}
+
+{% block title %}
+  <title>{{title}} - marem</title>
+{% endblock %}
+
+{% block extra_js %}
+  {% assets "js/marem.js" %}
+    <script type="text/javascript" src="{{ ASSET_URL }}"></script>
+  {% endassets %}
+{% endblock %}
+
+{% block content %}
+  <h1>Hello, welcome to the Marantz Remote</h1>
+  Current state : 
+  <table>
+    {% for key in state.keys() %}
+    <tr>
+        <td><label for="{{key}}" class="form-label">{{key}}</label></td>
+        <td>{{form|attr(key)(class="form-control")}}</td>
+    </tr>
+    {% endfor %}
+  </table>
+  <p> <button class='btn btn-primary' id="reload">Reload</button> </p>
+{% endblock %}

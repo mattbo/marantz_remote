@@ -2,20 +2,35 @@
 
 function get_state() { 
   /* call the get_state endpoint and populate the form fields */
-  $.getJSON($SCRIPT_ROOT + '/state', {}, function(data) { 
-    $("#volume").value(state['volume']);
+  console.log("in get_state");
+  $.getJSON($SCRIPT_ROOT + '/get_state', {}, function(state) { 
 
-    var spkr_id = '.spkr_' + state['speakers'];
-    $(".spkr_state").deselect(); //probably does not work
-    $(spkr_id).selected();
+    console.log("got state, volume " + state['volume']);
+    $("#volume").val(state['volume']);
 
-    var src_opt = '#' + state['source'];
-    $("#source", src_opt).selected();
+    var spkr_id = '#speakers option[value="' + state['speakers'] + '"]';
+    $(spkr_id).attr("selected", true);
+
+    var src_opt = '#source option[value="' + state['source'] + '"]';
+    $(src_opt).attr("selected", true);
     
-    //surround is not yet implemented
-    //var surr = '#' + state['surround']
+    var surr = '#surround_mode option[value="' + state['surround'] + '"]';
+    console.log(surr);
+    $(surr).attr("selected", true);
   });
 }
 
-function set_state() {
+/* Attach the javascript to the reload button */
+$(function() {  $('#reload').on('click', get_state); });
+
+function set_state() { 
+    /* call the set_state endpoint */
+    console.log("in set state");
+    $.post($SCRIPT_ROOT + '/set_state', $(this).serialize());
+}
+
+$(function() { $('#volume').on('change', set_state); });
+$(function() { $('#speakers').on('change', set_state); });
+$(function() { $('#source').on('change', set_state); });
+$(function() { $('#surround_mode').on('change', set_state); });
   

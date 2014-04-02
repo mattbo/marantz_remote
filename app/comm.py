@@ -11,9 +11,6 @@ class MaremComm(object):
    def __init__(self):
        self.tn = telnetlib.Telnet(MARANTZ_IP)
 
-   def __del__(self):
-       self.close()
-
    def close(self):
        self.tn.close()
 
@@ -22,16 +19,23 @@ class MaremComm(object):
        print(args)
 
    def run_cmd(self, cmd, resp_cnt):
+       #self.open_conn()
        resp = []
+       cmd = cmd.encode("ascii")
        self.dprint("Sending cmd %s" % cmd)
-       self.tn.read_eager() #clear any old stuff
+       self.tn.read_very_eager() #clear any old stuff
        self.tn.write(cmd)
        #Some commands return several pieces of state info, so 
        # grab them all.
        for r in range(resp_cnt):
            #Strip the trailing \r
            resp.append(self.tn.read_until('\r', 1)[:-1])
+           #raw = self.tn.read_until('zzr', .25)[:-1]
+           #for single_raw in raw.split('\r'):
+               #resp.append(single_raw)
+
        self.dprint("Got response %s" % resp)
+       #self.close()
        return resp
 
    def get_state(self):
@@ -79,6 +83,7 @@ class MaremComm(object):
        ''' Set the master volume to a number of decibels (.5dB precision) '''
        #Bad things happen if you try to set the volume to the current
        #setting...
+       db = float(db)
        if db == self.get_volume(): return db
        rv = self.run_cmd("MV%s\r" % self.db_to_vol(db), 3)
        return self.vol_to_db(rv[0][2:])
@@ -115,19 +120,24 @@ class MaremComm(object):
    def set_source(self, src):
        if src not in [x[0] for x in self.sources]:
            raise BadValue("%s is not a valid source", src)
-       rv = self.run_cmd('SI%s\r' % src, 3)
+       rv = self.run_cmd('SI%s\r' % src, 5)
        return rv[0][2:]
 
    surround_modes = (
-       ('DIRECT', 'DIRECT'),
-       ('PURE DIRECT', 'PURE DIRECT'),
-       ('STEREO', 'STEREO'),
-       ('AUTO', 'AUTO'),
-       ('DOLBY DIGITAL', 'DOLBY DIGITAL'),
-       ('DOLBY', 'DOLBY'),
-       ('DTS SURROUND', 'DTS SURROUND'),
-       ('MCH STEREO', 'MCH STEREO'),
-       ('VIRTUAL', 'VIRTUAL'))
+       ('DIRECT', 'Direct'),
+       ('PURE DIRECT', 'Pure Direct'),
+       ('STEREO', 'Stereo'),
+       ('AUTO', 'Auto-select'),
+       ('DOLBY DIGITAL', 'Dolby Digital'),
+       ('DOLBY', 'Dolby'),
+       ('DOLBY PL2 C', 'DOLBY PLII Cinema'),
+       ('DOLBY PL2 M', 'DOLBY PLII Music'),
+       ('DOLBY PL2 G', 'DOLBY PLII Game'),
+       ('DTS SURROUND', 'DTS Surround'),
+       ('DTS NEO:6 C', 'DTS Neo:6 Cinema'),
+       ('DTS NEO:6 M', 'DTS Neo:6 Music'),
+       ('MCH STEREO', 'Multi-channel stereo'),
+       ('VIRTUAL', 'Virtual'))
 
    def get_surround_mode(self):
        rv = self.run_cmd('MS?\r', 9)
